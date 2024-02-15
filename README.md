@@ -3,14 +3,14 @@ Proyecto de data
 
 
 ## Roles
-Breyner Ocampo : DataScience, ETL
+Breyner Ocampo: DataScience, ETL
 
 Mariela Abrego: DataScience
 
-Leandro : ML,ETL , PM
+Leandro Luna: ML, ETL, PM
 
-Alejandro: Data Analyst, Machine Learning
+Alejandro Escudero: Data Analyst, Machine Learning
 
-Jorge: Data Analyst
+Jorge Henriquez Novoa: Data Analyst
 
-David: Data engineer 
+David Ramirez Saez: Data engineer 
