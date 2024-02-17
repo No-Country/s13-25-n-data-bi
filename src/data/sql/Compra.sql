@@ -1,1 +1,0 @@
-SELECT * FROM "Compra" LIMIT 10;
