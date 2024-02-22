@@ -5,14 +5,14 @@ import streamlit as st
 import pandas as pd
 import sys
 import os
-from view.GrupoB import grupoB
+from view.GrupoB import grupoB,generalEDA
 def main():
     #  Conexion a la base de datos
 
     # Tabs
     page_names_to_funcs = {
         "Home Page": grupoB,
-        # "Create": create,
+        "EDA": generalEDA,
         # "Read": read,
         # "Update": update,
         # "Delete": delete,
