@@ -5,7 +5,7 @@ import streamlit as st
 import pandas as pd
 import sys
 import os
-from view.GrupoB import grupoB,generalEDA
+from view.GrupoB import grupoB,generalEDA,edaArque
 def main():
     #  Conexion a la base de datos
 
@@ -13,7 +13,7 @@ def main():
     page_names_to_funcs = {
         "Home Page": grupoB,
         "EDA": generalEDA,
-        # "Read": read,
+        "Arquitectura S.A.": edaArque,
         # "Update": update,
         # "Delete": delete,
     }

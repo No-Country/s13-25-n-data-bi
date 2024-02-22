@@ -123,3 +123,34 @@ Analisis de datos de caso propuesto base de datos de datos de Proyectos de const
         PieObj(dataob)
     # Close connection
     conn.close()
+def edaArque():
+    icon = "🕮"
+    title = "Analisis de datos exploratorios"
+    sns.set_theme()
+    st.markdown(f"# {title} {icon}")
+    st.sidebar.markdown(f"# {title} {icon}")
+    st.write("Analisis EDA para Arquitectura S.A.")
+    
+    message = '''# EDA
+Analisis de datos de caso propuesto base de datos de datos de Proyectos de construcción en Colombia.
+
+- ¿Cuál es el comportamiento de la constructura Arquitectura S.A.?
+- ¿Cuál es el comportamiento de la constructura por variables categoricas y numericas?'''
+    
+    st.markdown(message)
+
+    BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    sqlCommands = sqlCommand(path=BASE_DIR+"/data/sql/")
+    conn = connectionBD()
+
+    dfArque = pd.read_sql(sql=sqlCommands[-1],con= conn)
+
+
+    data = [dfArque]
+
+    # print(df)
+    # st.table(dfCostoPro)
+    for dataob in data:
+        PieObj(dataob)
+    # Close connection
+    conn.close()
