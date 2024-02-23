@@ -28,12 +28,14 @@ VSC select enviroment
 
 `
 /env/scripts/python.exe
+env/Scripts/activate
 `
 
 To install requirements:
 
 `
 pip install requirements.txt
+pip install -r requirements.txt
 `
 
 To add  new requirement.

@@ -23,3 +23,5 @@ def grupoB():
     
     # Close connection
     conn.close()
+
+
