@@ -3,23 +3,20 @@ import os
 import pandas as pd
 from data.SqlCommand import sqlCommand
 from data.SnowflakeConnection import connectionBD
-
-import yfinance as yf
-from datetime import datetime, timedelta
 from view.Datos import yahooFinance
+
 
 def limpieza():
     icon = "🧹"
     title = "Limpieza de datos"
-    
+
     st.markdown(f"# {title} {icon}")
     st.sidebar.markdown(f"# {title} {icon}")
-
+    st.write("Revision de informacion faltante de los datasets")
 
     BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     sqlCommands = sqlCommand(path=BASE_DIR+"/data/sql/")
     conn = connectionBD()
-    
     table1 = pd.read_sql(sqlCommands[0], conn)
     table2 = pd.read_sql(sqlCommands[1], conn)
     table3 = pd.read_sql(sqlCommands[2], conn)
@@ -47,8 +44,6 @@ def limpieza():
     st.write("Observamos si hay datos nulos")
     st.write(table5.isnull().sum())
 
-
-
     st.write("Muestras de las tabla de yahoo finance")
     data = yahooFinance()
     st.table(data.head())
@@ -56,7 +51,5 @@ def limpieza():
     st.write("Observamos si hay datos nulos")
     st.write(data.isnull().sum())
 
-
-    
 
 

@@ -1,15 +1,12 @@
 import streamlit as st
-import pandas as pd
 import sys
-from view.GrupoB import grupoB
-
-from view.GrupoJ import grupoJ
 from view.Datos import datos
 from view.Objetivo import objetivo
 from view.Limpieza import limpieza
 from view.Exploracion import exploracion
 from view.Visualizacion import visualizacion
-from view.ML import ml
+# from view.ML import ml
+from view.Conclusiones import conclusiones
 
 
 def main():
@@ -17,14 +14,13 @@ def main():
 
     # Tabs
     page_names_to_funcs = {
-        "Objetivo":objetivo,
+        "Objetivo": objetivo,
         "Datos": datos,
-        "Limpieza":limpieza,
-        "Exploracion":exploracion,
-        "Visualizacion":visualizacion,
-        "ML":ml,
-        # "Home Page": grupoB,
-        # "Grupo J": grupoJ,
+        "Limpieza": limpieza,
+        "Exploracion": exploracion,
+        "Visualizacion": visualizacion,
+        # "ML": ml,
+        "Conclusiones": conclusiones,
     }
 
     v = sys.version.split(" ")
@@ -38,4 +34,5 @@ def main():
 
 if __name__ == "__main__":
     print("HOME")
+
 
