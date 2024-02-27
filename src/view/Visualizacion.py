@@ -30,6 +30,7 @@ def visualizacion():
     tabla_pt= pd.merge(proyectos, tipos, on='ID_Tipo', how='inner')
     tabla_ptl= pd.merge(tabla_pt, lideres, on='ID_Lider', how='inner')
     tabla_cm = pd.merge(compras, materiales, on='ID_MaterialConstruccion', how='inner')
+
     tabla_final = pd.merge(tabla_ptl, tabla_cm, on="ID_Proyecto", how="inner")
 
     st.subheader("Informacion de la BD de la constructora")
