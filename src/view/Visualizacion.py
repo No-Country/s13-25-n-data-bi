@@ -7,7 +7,7 @@ from view.Datos import yahooFinance
 import matplotlib.pyplot as plt
 import seaborn as sns
 import folium
-
+import numpy as np
 
 def visualizacion():
     icon = "📊"
@@ -26,6 +26,7 @@ def visualizacion():
     materiales = pd.read_sql(sqlCommands[2], conn)
     tipos = pd.read_sql(sqlCommands[3], conn)
     proyectos = pd.read_sql(sqlCommands[4], conn)
+    proyectosC = pd.read_sql(sqlCommands[5], conn)
 
     tabla_pt= pd.merge(proyectos, tipos, on='ID_Tipo', how='inner')
     tabla_ptl= pd.merge(tabla_pt, lideres, on='ID_Lider', how='inner')
@@ -129,3 +130,30 @@ def visualizacion():
     plt.xticks(rotation=45)
     plt.legend()
     st.pyplot(plt)
+
+    st.markdown(f"# Costo por proyecto :dollar:")
+    # Costo por proyecto -----------------------
+    st.write("Valor de los proyectos")
+    df = st.dataframe(proyectosC)
+    
+
+    dtprecioD = proyectosC.describe().Costo_Proyecto
+    dtprecio = dtprecioD.to_list()
+    mean = dtprecio[1]
+    std = dtprecio[2]
+    dtprecio = dtprecio[4:7]
+    st.write(dtprecioD)
+ 
+    #  Grafica  histograma por precio de proyecto
+    fig, ax = plt.subplots()
+    colors = sns.color_palette('pastel')[0:len(dtprecio)]
+
+    plt.title(rf'Histogram of IQ: $\mu={np.round(mean,2)}$, $\sigma={np.round(std,2)}$')
+    sns.histplot(x="Costo_Proyecto", kde=True, data=proyectosC)
+    #  Grafica cuartiles 25,50,75
+    for i,j in enumerate(dtprecio):
+        plt.axvline(j,color=colors[i],linestyle='--')
+    datlegend = ["kde"]  # estimación de densidad de Kernel (KDE)
+    datlegend = datlegend+dtprecio
+    plt.legend(datlegend)
+    st.pyplot(fig)

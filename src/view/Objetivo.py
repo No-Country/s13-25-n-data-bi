@@ -17,6 +17,7 @@ def objetivo():
     st.write("6. ***¿Que banco tiene mayor presencia en el tema de construcciones?***")
     st.write("7. ***¿Cual es el estrato donde hay un mayor indice de construcciones?***")
     st.write("8. ***¿Como podemos escoger cual es la criptomoneda mas rentable para invertir?***")
+    st.write("9. ***¿Cuál es el comportamiento del valor de los proyectos?***")
 
 # Relación entre el Tipo de Vivienda y la Entidad Bancaria:
 
