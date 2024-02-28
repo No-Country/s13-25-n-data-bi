@@ -57,3 +57,8 @@ To display the project compile this command:
 `
 python -m streamlit run app.py
 `
+# Stack tecnological
+
+Principals tools in the project
+
+![Image text](/StackDS.png)
