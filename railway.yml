@@ -1,0 +1,4 @@
+services:
+  - env: python
+    port: 8501  
+    command: python -m streamlit run app.py

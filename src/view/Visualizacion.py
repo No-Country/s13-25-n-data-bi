@@ -6,7 +6,6 @@ import os
 from view.Datos import yahooFinance
 import matplotlib.pyplot as plt
 import seaborn as sns
-import folium
 
 
 def visualizacion():
@@ -32,9 +31,54 @@ def visualizacion():
     tabla_cm = pd.merge(compras, materiales, on='ID_MaterialConstruccion', how='inner')
 
     tabla_final = pd.merge(tabla_ptl, tabla_cm, on="ID_Proyecto", how="inner")
-
+    
+    columnas = ["ID_Proyecto","Acabados","Estrato","Ciudad","Constructora","Banco_Vinculado","Porcentaje_Cuota_Inicial","Financiable","Clasificacion_x","Nombre_Material","Cantidad","Precio_Unidad","Pagado","Proveedor"]
     st.subheader("Informacion de la BD de la constructora")
-    st.write(tabla_final)
+    st.write(tabla_final[columnas])
+
+
+    # Graficas de proyectos terminados y no terminados
+    conteo_proyectos = tabla_final.groupby('Acabados').size().reset_index(name='Cantidad')
+    
+
+    porcentajes = tabla_final.groupby('Acabados').size() / len(tabla_final) * 100
+
+    fig, ax = plt.subplots()
+    ax.pie(porcentajes, labels=porcentajes.index, autopct='%1.1f%%', startangle=90)
+    st.title('Porcentaje de proyectos terminados')
+    st.dataframe(conteo_proyectos)
+    st.pyplot(fig)
+
+
+    # Ciudades------------------------
+
+    data = {
+    'Ciudad': ['Manizales', 'Ibague', 'Pereira', 'Neiva', 'Barranquilla', 'Salento', 'Armenia', 'Monteria', 'Bogota', 'Bucaramanga', 'Santa Marta', 'Quibdo', 'Sta. Rosa de Cabal', 'Cartago', 'Cartagena'],
+    'LAT': [5.0679, 4.4389, 4.8143, 2.9273, 10.9639, 4.6378, 4.5343, 8.7489, 4.6097, 7.1139, 11.2315, 5.6928, 4.868, 4.7466, 10.3997],
+    'LON': [-75.5174, -75.2323, -75.6944, -75.2808, -74.7990, -75.6146, -75.6818, -75.8815, -74.0817, -73.1198, -74.2009, -76.6503, -75.6218, -75.5468, -75.5144]
+    }
+
+    porcentajes = tabla_final.groupby('Ciudad').size().reset_index(name='# Proyectos x Ciudad')
+    
+
+    st.title("Ciudades donde se realizaron proyectos")
+    st.dataframe(porcentajes)
+    st.map(data)
+
+    # -------------------------------------
+
+    pivot_table = pd.pivot_table(tabla_final, values='Clasificacion_x', index=['Estrato', 'Banco_Vinculado'], aggfunc='count').unstack()
+    columnas_bancos = pivot_table.columns.get_level_values('Banco_Vinculado')
+    pivot_table.columns = columnas_bancos
+    st.table(pivot_table)
+
+    fig, ax = plt.subplots(figsize=(12, 8))
+    pivot_table.plot(kind='bar', stacked=True, ax=ax)
+    plt.legend(title='Clasificacion_x', bbox_to_anchor=(1, 1))
+    plt.xlabel('Estrato y Bancos Vinculados', fontsize=14)
+    plt.ylabel('Cantidad', fontsize=18)
+    ax.set_xticklabels(ax.get_xticklabels())
+    st.pyplot(fig)
 
     # -------- Grafica relacion vivienda y entidad bancaria --------------------
     fig, ax = plt.subplots(figsize=(12, 6))
