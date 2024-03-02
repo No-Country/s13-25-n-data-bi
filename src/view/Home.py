@@ -5,7 +5,7 @@ from view.Objetivo import objetivo
 from view.Limpieza import limpieza
 from view.Exploracion import exploracion
 from view.Visualizacion import visualizacion
-# from view.ML import ml
+from view.ML import ml
 from view.Conclusiones import conclusiones
 
 
@@ -19,7 +19,7 @@ def main():
         "Limpieza": limpieza,
         "Exploracion": exploracion,
         "Visualizacion": visualizacion,
-        # "ML": ml,
+        "ML": ml,
         "Conclusiones": conclusiones,
     }
 

@@ -40,18 +40,27 @@ def visualizacion():
     st.write(tabla_final[columnas])
 
 
-    # Graficas de proyectos terminados y no terminados
-    conteo_proyectos = tabla_final.groupby('Acabados').size().reset_index(name='Cantidad')
-    
+    # Gráfico de barras para mostrar proyectos terminados y no terminados por banco
+    st.title("Informacion de proyectos terminados y no terminados por banco")
+    tabla_frecuencia = pd.crosstab(tabla_final['Banco_Vinculado'], tabla_final['Acabados'])
+    st.dataframe(tabla_frecuencia)
 
-    porcentajes = tabla_final.groupby('Acabados').size() / len(tabla_final) * 100
+    proyectos_terminados = tabla_frecuencia['Si']
+    proyectos_no_terminados = tabla_frecuencia['No']
+    promedio_terminados_no_terminados_por_banco = (proyectos_terminados / proyectos_no_terminados)
+    df_promedio_terminados_no_terminados = pd.DataFrame({'Banco': promedio_terminados_no_terminados_por_banco.index, 'Promedio_Terminados/NoTerminados': promedio_terminados_no_terminados_por_banco.values})
+    df_promedio_terminados_no_terminados = df_promedio_terminados_no_terminados.sort_values(by='Promedio_Terminados/NoTerminados', ascending=False)
+    st.dataframe(df_promedio_terminados_no_terminados)
 
-    fig, ax = plt.subplots()
-    ax.pie(porcentajes, labels=porcentajes.index, autopct='%1.1f%%', startangle=90)
-    st.title('Porcentaje de proyectos terminados')
-    st.dataframe(conteo_proyectos)
-    st.pyplot(fig)
-
+    st.dataframe(tabla_frecuencia.describe())
+    sns.set(style="whitegrid")
+    plt.figure(figsize=(10, 6))
+    sns.countplot(x='Banco_Vinculado', hue='Acabados', data=tabla_final)
+    plt.title('Proyectos Terminados y No Terminados por Banco')
+    plt.xlabel('Banco')
+    plt.ylabel('Cantidad de Proyectos')
+    plt.legend(title='Estado')
+    st.pyplot(plt)
 
     # Ciudades------------------------
 
@@ -69,6 +78,7 @@ def visualizacion():
     st.map(data)
 
     # -------------------------------------
+    st.title("Informacion de proyectos por estratos y su relacion con las entidades bancarias")
 
     pivot_table = pd.pivot_table(tabla_final, values='Clasificacion_x', index=['Estrato', 'Banco_Vinculado'], aggfunc='count').unstack()
     columnas_bancos = pivot_table.columns.get_level_values('Banco_Vinculado')
@@ -76,24 +86,59 @@ def visualizacion():
     st.table(pivot_table)
 
     fig, ax = plt.subplots(figsize=(12, 8))
-    pivot_table.plot(kind='bar', stacked=True, ax=ax)
+    pivot_table.plot(kind='bar', stacked=False, ax=ax)
     plt.legend(title='Clasificacion_x', bbox_to_anchor=(1, 1))
     plt.xlabel('Estrato y Bancos Vinculados', fontsize=14)
     plt.ylabel('Cantidad', fontsize=18)
-    ax.set_xticklabels(ax.get_xticklabels())
+    ax.set_xticklabels(ax.get_xticklabels(), rotation=45, ha='right')
     st.pyplot(fig)
 
     # -------- Grafica relacion vivienda y entidad bancaria --------------------
+    st.title("Informacion de proyectos por tipo de vivienda y su relacion con las entidades bancarias")
+
+    tabla_contingencia = pd.crosstab(tabla_final['Clasificacion_x'], tabla_final['Banco_Vinculado'], margins=True, margins_name="Total")
+    st.dataframe(tabla_contingencia)
     fig, ax = plt.subplots(figsize=(12, 6))
     sns.countplot(x='Clasificacion_x', hue='Banco_Vinculado', data=tabla_final)
     plt.title('Relación entre Tipo de Vivienda y Entidad Bancaria')
     plt.legend(bbox_to_anchor=(1.05, 1), loc='upper left')
     st.pyplot(fig)
 
+
+
+    st.title("Informacion de entidades bancarias")
     fig3, ax3 = plt.subplots()
     tabla_final['Banco_Vinculado'].value_counts().plot.pie(autopct='%1.1f%%')
     plt.title('Distribución de Inversiones entre Entidades Bancarias')
     st.pyplot(fig3)
+
+    st.title("Informacion de financimiento segun banco y tipo de vivienda")
+    # Crear la figura y los ejes
+    g = sns.catplot(
+        x='Clasificacion_x',
+        hue='Banco_Vinculado',
+        col='Financiable',
+        data=tabla_final,
+        kind='count',
+        height=18,  # Ajusta este valor según tus necesidades
+        aspect=1.2,
+        palette='viridis',
+    )
+
+    # Ajustar las etiquetas y la leyenda
+    g.set_axis_labels('Clasificacion_x', 'Cantidad')
+    g.set_titles(col_template="{col_name} Financiable")
+    g.add_legend(title='Entidad Bancaria', bbox_to_anchor=(1.05, 0.8), loc='upper left')
+
+    # Ajustar las propiedades del texto y los ejes
+    g.set_xticklabels(rotation=45, ha='right', fontsize=12)
+    g.set_yticklabels(fontsize=12)
+    g.set_titles(fontsize=14)
+    g.set_xlabels(fontsize=14)
+    g.set_ylabels(fontsize=14)
+
+    # Mostrar la gráfica en Streamlit
+    st.pyplot(g)
 
 
     # ------- Grafica relación tipo de vivienda y material utilizado ------------
@@ -103,21 +148,22 @@ def visualizacion():
     plt.legend(bbox_to_anchor=(1.05, 1), loc='upper left')
     st.pyplot(fig)
 
-    # Ejemplo de un gráfico de barras apiladas
+
+    st.title("Grafica de porcentaje de cuota inicial segun el banco")
+
+    tabla_promedios = tabla_final.groupby('Banco_Vinculado')['Porcentaje_Cuota_Inicial'].mean().reset_index()
+    tabla_promedios = tabla_promedios.sort_values(by='Porcentaje_Cuota_Inicial', ascending=True)
+    st.dataframe(tabla_promedios)
+
     fig, ax = plt.subplots(figsize=(12, 6))
-    sns.countplot(x='Nombre_Material', data=tabla_final)
-    plt.title('Patrones en Tipos de Materiales Seleccionados')
-    plt.xticks(rotation=45, ha='right')
+    sns.barplot(x='Banco_Vinculado', y='Porcentaje_Cuota_Inicial', data=tabla_final) 
+    plt.title('Diferencias en Términos de Financiamiento')
+    plt.xlabel('Banco Vinculado')
+    plt.ylabel('Promedio de Porcentaje de Cuota Inicial')
     st.pyplot(fig)
 
-
-
-    fig4, ax4 = plt.subplots(figsize=(12, 6))
-    sns.boxplot(x='Banco_Vinculado', y='Porcentaje_Cuota_Inicial', data=tabla_final)
-    plt.title('Diferencias en Términos de Financiamiento')
-    st.pyplot(fig4)
-
     # Grafica de cantidad de proyectos de la constructora -----------------------
+    st.title("Grafica de cantidad de proyectos segun constructora")
     agrupados = proyectos.groupby('Constructora').size().reset_index(name='cantidad_proyectos')
     st.dataframe(agrupados)
     fig, ax = plt.subplots(figsize=(10, 6))
@@ -140,42 +186,6 @@ def visualizacion():
     ax.set_title('Cantidad de Proyectos por Banco Vinculado')
     plt.xticks(rotation=45, ha='right')
     st.pyplot(fig)
-
-
-
-    # ----------------- Graficas de las cryptomonedas -----------------------------
-    st.subheader("Informacion de la BD de las CryptoMonedas")
-    data = yahooFinance()
-    cryptos = ['Cardano', 'Bitcoin Cash', 'Bitcoin', 'Ethereum', 'Litecoin', 'Ripple']
-
-    st.write("Hallamos los rendimientos diarias")
-    returns = data.pct_change().dropna() # Halla el cambio porcentual de datos consecutivos
-    st.write(returns.head())
-
-
-    st.write("Graficas de rendimientos diarios")
-    fig, ax = plt.subplots(figsize=(12, 8))
-    returns.hist(bins=50, figsize=(12, 8), alpha=0.5, ax=ax)
-    ax.set_title('Histograma de Rendimientos de Criptomonedas')
-    ax.set_xlabel('Rendimiento')
-    ax.set_ylabel('Frecuencia')
-    st.pyplot(fig)
-
-    returns = data.pct_change().dropna()
-    for crypto in cryptos:
-        returns[f'{crypto}_Target'] = (returns[crypto] > 0).astype(int)
-    data_reset = returns.reset_index()
-    data_reset['Date'] = pd.to_datetime(data_reset['Date']).dt.date
-    cumulative_returns = (1 + returns).cumprod() - 1
-    plt.figure(figsize=(10, 6))
-    for crypto in cryptos:
-        plt.bar(crypto, cumulative_returns[f'{crypto}'].iloc[-1], label=f'{crypto}')
-    plt.title('Rendimiento acumulado de las 6 criptomonedas')
-    plt.xlabel('Criptomoneda')
-    plt.ylabel('Rendimiento Acumulado')
-    plt.xticks(rotation=45)
-    plt.legend()
-    st.pyplot(plt)
 
     st.markdown(f"# Costo por proyecto :dollar:")
     # Costo por proyecto -----------------------
@@ -203,3 +213,38 @@ def visualizacion():
     datlegend = datlegend+dtprecio
     plt.legend(datlegend)
     st.pyplot(fig)
+
+
+
+    # ----------------- Graficas de las cryptomonedas -----------------------------
+    st.subheader("Informacion de la BD de las CryptoMonedas")
+    data = yahooFinance()
+    cryptos = ['Cardano', 'Bitcoin Cash', 'Bitcoin', 'Ethereum', 'Litecoin', 'Ripple']
+
+    st.write("Hallamos los rendimientos diarias")
+    returns = data.pct_change().dropna() # Halla el cambio porcentual de datos consecutivos
+    st.write(returns.head())
+
+    fig, ax = plt.subplots(figsize=(12, 6))
+    for crypto in cryptos:
+        plt.plot(data.index, data[crypto], label=crypto)
+    # Ajustar el diseño y las etiquetas
+    plt.title('Precios Históricos de Criptomonedas')
+    plt.xlabel('Fecha')
+    plt.ylabel('Precio de Cierre Ajustado')
+    plt.legend()
+    st.pyplot(fig)
+
+
+    st.write("Graficas de rendimientos diarios")
+    fig, ax = plt.subplots(figsize=(12, 8))
+    returns.hist(bins=50, figsize=(12, 8), alpha=0.5, ax=ax)
+    ax.set_title('Histograma de Rendimientos de Criptomonedas')
+    ax.set_xlabel('Rendimiento')
+    ax.set_ylabel('Frecuencia')
+    st.pyplot(fig)
+
+    returns = data.pct_change().dropna()
+
+    
+    
