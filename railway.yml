@@ -1,4 +1,7 @@
 services:
   - env: python
-    port: 8501  
+    build:
+    context: .
+    dockerfile: Dockerfile.dev
+    # port: 8501  
     command: python -m streamlit run app.py
