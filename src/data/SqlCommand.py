@@ -1,6 +1,4 @@
-
 import os
-import pandas as pd
 import logging
 
 
@@ -35,7 +33,6 @@ def sqlCommand(path):
 
 
 if __name__ == '__main__':
-
     var = sqlCommand(path='./')
     print(var)
 
