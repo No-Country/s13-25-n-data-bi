@@ -1,9 +1,5 @@
 import streamlit as st
 import sys
-<<<<<<< HEAD
-import os
-from view.GrupoB import grupoB,generalEDA,edaArque
-=======
 from view.Datos import datos
 from view.Objetivo import objetivo
 from view.Limpieza import limpieza
@@ -13,19 +9,11 @@ from view.ML import ml
 from view.Conclusiones import conclusiones
 
 
->>>>>>> jorgehn
 def main():
     #  Conexion a la base de datos
 
     # Tabs
     page_names_to_funcs = {
-<<<<<<< HEAD
-        "Home Page": grupoB,
-        "EDA": generalEDA,
-        "Arquitectura S.A.": edaArque,
-        # "Update": update,
-        # "Delete": delete,
-=======
         "Objetivo": objetivo,
         "Datos": datos,
         "Limpieza": limpieza,
@@ -33,7 +21,6 @@ def main():
         "Visualizacion": visualizacion,
         "ML": ml,
         "Conclusiones": conclusiones,
->>>>>>> jorgehn
     }
 
     v = sys.version.split(" ")

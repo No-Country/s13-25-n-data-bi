@@ -15,3 +15,4 @@ EXPOSE 80
 
 ## Run app.py when the container launches
 CMD streamlit run --server.port 80 app.py
+# python -m streamlit run app.py
